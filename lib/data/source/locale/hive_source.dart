@@ -11,9 +11,13 @@ class HiveSource {
 
   static const String _taskKey = 'task';
 
+  static const String _tagKey = 'tag';
+
   late final Box<User> _userBox;
 
   late final Box<Task> _taskBox;
+
+  late final Box<Tag> _tagBox;
 
   @factoryMethod
   static Future<HiveSource> create() async {
@@ -29,6 +33,7 @@ class HiveSource {
     Hive.registerAdapter(TagAdapter());
     _userBox = await Hive.openBox(_userKey);
     _taskBox = await Hive.openBox(_taskKey);
+    _tagBox = await Hive.openBox(_tagKey);
   }
 
   Future<void> setUser(User user) => _userBox.put(_userKey, user);
@@ -39,7 +44,15 @@ class HiveSource {
     }
   }
 
+  Future<void> setTags(List<Tag> tags) async {
+    for (var item in tags) {
+      await _tagBox.put(item.sid, item);
+    }
+  }
+
   List<Task> getTasks() => _taskBox.values.toList();
+
+  List<Tag> getTags() => _tagBox.values.toList();
 
   Future<void> clear() async {
     await _userBox.clear();

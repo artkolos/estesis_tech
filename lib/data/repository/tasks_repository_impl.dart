@@ -3,6 +3,7 @@ import 'package:estesis_tech/data/source/remote/rest_source.dart';
 import 'package:estesis_tech/domain/model/task/task.dart';
 import 'package:estesis_tech/domain/repository/tasks_repository.dart';
 import 'package:injectable/injectable.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 @LazySingleton(as: TaskRepository)
 class TaskRepositoryImpl implements TaskRepository {
@@ -13,9 +14,16 @@ class TaskRepositoryImpl implements TaskRepository {
 
   @override
   Future<List<Task>> getTasks({int limit = 50, int offset = 0}) async {
-    final tasks = await restSource.getTasks(limit: limit, offset: offset);
-    await hiveSource.setTasks(tasks);
-    return tasks;
+    bool isConnect =
+        await InternetConnectionChecker.createInstance().hasConnection;
+    if (isConnect) {
+      final tasks = await restSource.getTasks(limit: limit, offset: offset);
+      await hiveSource.setTasks(tasks);
+      return tasks;
+    } else {
+      final tasks = hiveSource.getTasks();
+      return tasks;
+    }
   }
 
   @override

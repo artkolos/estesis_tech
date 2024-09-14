@@ -30,6 +30,7 @@ dependencies:
   flutter_svg: ^2.0.10+1
   list_wheel_scroll_view_nls: ^0.0.3
   calendar_date_picker2: ^1.1.7
+  envied: ^0.5.4+1
   dropdown_button2: ^2.3.9
   shimmer: ^3.0.0
   internet_connection_checker: ^2.0.0
